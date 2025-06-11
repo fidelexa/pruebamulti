@@ -53,7 +53,7 @@
 
     const supabase = window.supabase.createClient(
       "https://oqskgarzuztkagvupqsk.supabase.co",
-      "TU_ANON_KEY"
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xc2tnYXJ6dXp0a2FndnVwcXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NjA3NzYsImV4cCI6MjA2NTIzNjc3Nn0.GttqwBmOrD09QDY68QFUN1_zrUQBCa7R4iBNC2qZZ0o"
     );
 
     async function cargarLogo(slug) {
@@ -65,11 +65,15 @@
 
       if (data?.logo_url) {
         document.getElementById("logo").src = data.logo_url;
+      } else {
+        console.error("No se encontró logo para el slug:", slug, error);
       }
     }
 
     if (slug) {
       cargarLogo(slug);
+    } else {
+      console.error("Slug no detectado en la URL");
     }
 
     async function register() {
