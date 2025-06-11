@@ -3,7 +3,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Registro - Negocio Dinámico</title>
+  <title>Registro - Multi Negocio</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <style>
     body {
       font-family: sans-serif;
@@ -35,18 +36,11 @@
     #resultado {
       margin-top: 20px;
     }
-    .dynamic-color-negociodani {
-      background-color: #007BFF;
-    }
-    .dynamic-color-negociojuan {
-      background-color: #FFC107;
-    }
   </style>
 </head>
-<body id="body">
+<body>
   <img id="logo" src="" alt="Logo negocio" />
-  <h2 id="titulo">Registro</h2>
-  <p id="fidelizacion">Cargando beneficios...</p>
+  <h2>Registro</h2>
 
   <input type="text" id="name" placeholder="Tu nombre" required />
   <input type="email" id="email" placeholder="Tu email" required />
@@ -57,27 +51,25 @@
   <script>
     const slug = new URLSearchParams(window.location.search).get("negocio");
 
-    const logos = {
-      negociodani: "https://f004.backblazeb2.com/file/imageneswallet/negociodani_logo.png",
-      negociojuan: "https://f004.backblazeb2.com/file/imageneswallet/negociojuan_logo.png"
-    };
+    const supabase = window.supabase.createClient(
+      "https://oqskgarzuztkagvupqsk.supabase.co",
+      "TU_ANON_KEY"
+    );
 
-    const colores = {
-      negociodani: "#007BFF",
-      negociojuan: "#FFC107"
-    };
+    async function cargarLogo(slug) {
+      const { data, error } = await supabase
+        .from("businesses")
+        .select("logo_url")
+        .eq("slug", slug)
+        .single();
 
-    const textos = {
-      negociodani: "Llevas 1 de 10 para tu cachimba gratuita",
-      negociojuan: "Llevas 1 de 10 para tu menú gratis"
-    };
+      if (data?.logo_url) {
+        document.getElementById("logo").src = data.logo_url;
+      }
+    }
 
-    if (slug && logos[slug]) {
-      document.getElementById("logo").src = logos[slug];
-      document.body.style.backgroundColor = colores[slug];
-      document.getElementById("fidelizacion").textContent = textos[slug];
-    } else {
-      document.getElementById("fidelizacion").textContent = "Negocio no identificado";
+    if (slug) {
+      cargarLogo(slug);
     }
 
     async function register() {
