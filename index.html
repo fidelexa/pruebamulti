@@ -4,145 +4,131 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registro Cliente - Fidelexa</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <title>Fidelexa – Fideliza con QR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
   <style>
-    * {
-      box-sizing: border-box;
-    }
     body {
-      font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #1e3c72, #2a5298);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
       margin: 0;
-    }
-    .container {
-      background: #fff;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #f8f9fb, #e8edf3);
       color: #333;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-      max-width: 400px;
-      width: 100%;
+    }
+    header {
+      padding: 60px 20px;
+      text-align: center;
+      background-color: #243B55;
+      color: white;
+    }
+    header h1 {
+      font-size: 36px;
+      margin-bottom: 12px;
+    }
+    header p {
+      font-size: 18px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .cta-buttons {
+      margin-top: 30px;
+    }
+    .cta-buttons a {
+      display: inline-block;
+      margin: 10px;
+      padding: 12px 24px;
+      font-weight: 600;
+      text-decoration: none;
+      border-radius: 8px;
+      color: white;
+      background: #0077cc;
+      transition: background 0.3s;
+    }
+    .cta-buttons a:hover {
+      background: #005fa3;
+    }
+    section {
+      max-width: 1000px;
+      margin: 60px auto;
+      padding: 0 20px;
       text-align: center;
     }
-    .logo {
-      width: 100px;
-      margin: 0 auto 20px;
-    }
     h2 {
-      margin-bottom: 10px;
-      font-size: 24px;
-      color: #2a5298;
+      font-size: 28px;
+      margin-bottom: 20px;
+      color: #243B55;
     }
-    input {
-      width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 16px;
+    .features {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 40px;
     }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #2a5298;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: background-color 0.3s ease;
+    .feature {
+      flex: 1 1 260px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
-    button:hover {
-      background-color: #1e3c72;
-    }
-    #resultado {
-      margin-top: 20px;
-    }
-    img.qr {
-      width: 200px;
-      margin-top: 15px;
+    footer {
+      text-align: center;
+      padding: 30px;
+      font-size: 14px;
+      background-color: #f0f0f0;
+      color: #666;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <img id="logo" class="logo" src="" alt="Logo negocio" />
-    <h2>Registro de Cliente</h2>
-    <input type="text" id="name" placeholder="Tu nombre" required />
-    <input type="email" id="email" placeholder="Tu email" required />
-    <button onclick="register()">Registrarse</button>
-    <div id="resultado"></div>
-  </div>
 
-  <script>
-    const slug = new URLSearchParams(window.location.search).get("negocio");
+  <header>
+    <h1>Fidelexa</h1>
+    <p>El sistema de fidelización con códigos QR que tus clientes recordarán. Escanean, consumen... ¡y ganan!</p>
+    <div class="cta-buttons">
+      <a href="/registro_local.html">Registrar mi negocio</a>
+      <a href="/login.html">Iniciar sesión</a>
+    </div>
+  </header>
 
-    const supabase = window.supabase.createClient(
-      "https://oqskgarzuztkagvupqsk.supabase.co",
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xc2tnYXJ6dXp0a2FndnVwcXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NjA3NzYsImV4cCI6MjA2NTIzNjc3Nn0.GttqwBmOrD09QDY68QFUN1_zrUQBCa7R4iBNC2qZZ0o"
-    );
+  <section>
+    <h2>¿Cómo funciona?</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>1. Registro sencillo</h3>
+        <p>Tu negocio se registra en segundos y define su propia recompensa.</p>
+      </div>
+      <div class="feature">
+        <h3>2. Escaneo de QR</h3>
+        <p>Cada cliente tiene su tarjeta con QR para acumular visitas.</p>
+      </div>
+      <div class="feature">
+        <h3>3. Recompensa automática</h3>
+        <p>Al llegar a la meta, el cliente obtiene su premio. Fácil y efectivo.</p>
+      </div>
+    </div>
+  </section>
 
-    async function cargarLogo(slug) {
-      const { data, error } = await supabase
-        .from("businesses")
-        .select("logo_url")
-        .eq("slug", slug)
-        .single();
+  <section>
+    <h2>Beneficios para tu negocio</h2>
+    <div class="features">
+      <div class="feature">
+        <h3>✅ 100% personalizable</h3>
+        <p>Define tu recompensa y número de consumos.</p>
+      </div>
+      <div class="feature">
+        <h3>📱 Totalmente digital</h3>
+        <p>Funciona desde el móvil y no requiere apps externas.</p>
+      </div>
+      <div class="feature">
+        <h3>📊 Gestión fácil</h3>
+        <p>Consulta y controla tus clientes desde el panel de administración.</p>
+      </div>
+    </div>
+  </section>
 
-      if (data?.logo_url) {
-        document.getElementById("logo").src = data.logo_url;
-      }
-    }
+  <footer>
+    &copy; 2025 Fidelexa. Todos los derechos reservados.
+  </footer>
 
-    if (slug) {
-      cargarLogo(slug);
-    }
-
-    async function register() {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const resultado = document.getElementById("resultado");
-
-      if (!name || !email || !slug) {
-        resultado.innerHTML = '<p style="color:red;">Faltan datos o negocio inválido</p>';
-        return;
-      }
-
-      resultado.innerHTML = "Registrando...";
-
-      try {
-        const response = await fetch("https://oqskgarzuztkagvupqsk.supabase.co/functions/v1/register_customer", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xc2tnYXJ6dXp0a2FndnVwcXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NjA3NzYsImV4cCI6MjA2NTIzNjc3Nn0.GttqwBmOrD09QDY68QFUN1_zrUQBCa7R4iBNC2qZZ0o"
-          },
-          body: JSON.stringify({ name, email, negocio: slug })
-        });
-
-        const data = await response.json();
-
-        if (response.ok) {
-          resultado.innerHTML = `
-            <p>¡Registro exitoso!</p>
-            <img src="${data.qr_url}" class="qr" alt="QR" />
-          `;
-        } else {
-          resultado.innerHTML = `<p style="color:red;">Error: ${data.error || JSON.stringify(data)}</p>`;
-        }
-      } catch (err) {
-        resultado.innerHTML = `<p style="color:red;">Error de conexión: ${err.message}</p>`;
-      }
-    }
-  </script>
 </body>
 </html>
