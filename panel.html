@@ -17,7 +17,7 @@
       color: #333;
     }
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: auto;
       background: #fff;
       padding: 30px;
@@ -51,6 +51,15 @@
     }
     button:hover {
       background: #141E30;
+    }
+    .reset-btn {
+      background: #e74c3c;
+      font-size: 13px;
+      padding: 6px 10px;
+      margin-left: 10px;
+    }
+    .reset-btn:hover {
+      background: #c0392b;
     }
     #scanner {
       width: 100%;
@@ -170,14 +179,27 @@
       const tbody = document.getElementById("clientes-lista");
       tbody.innerHTML = "";
       clientes.forEach(c => {
+        const progreso = `${c.consumos_actuales || 0} / ${negocio.meta_consumos || 0}`;
+        const puedeResetear = c.consumos_actuales >= negocio.meta_consumos;
+        const resetBtn = puedeResetear
+          ? `<button class="reset-btn" onclick="resetearCliente('${c.id}')">Resetear</button>`
+          : "";
         const tr = document.createElement("tr");
         tr.innerHTML = `
           <td>${c.name}</td>
           <td>${c.email}</td>
-          <td>${c.consumos_actuales || 0} / ${negocio.meta_consumos}</td>
+          <td>${progreso} ${resetBtn}</td>
         `;
         tbody.appendChild(tr);
       });
+    }
+
+    async function resetearCliente(clienteId) {
+      await supabase
+        .from("customers")
+        .update({ consumos_actuales: 0 })
+        .eq("id", clienteId);
+      cargarClientes();
     }
 
     function iniciarScanner() {
