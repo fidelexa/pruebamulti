@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel del Local</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background: #f1f4f9;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    h2 {
+      margin-top: 0;
+      color: #243B55;
+    }
+    label, input, button {
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    input {
+      padding: 8px;
+      width: 100%;
+      box-sizing: border-box;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 16px;
+      background: #243B55;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-top: 12px;
+    }
+    button:hover {
+      background: #141E30;
+    }
+    #scanner {
+      width: 100%;
+      max-width: 360px;
+      margin-top: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Panel de Administración</h2>
+    <div id="welcome"></div>
+    <div>
+      <h3>Configuración de Recompensa</h3>
+      <label for="recompensa">Recompensa:</label>
+      <input type="text" id="recompensa" />
+      <label for="meta">Meta de consumos:</label>
+      <input type="number" id="meta" />
+      <button onclick="guardarRecompensa()">Guardar cambios</button>
+    </div>
+    <hr>
+    <div>
+      <h3>Escanear QR de Cliente</h3>
+      <div id="scanner"></div>
+      <button onclick="iniciarScanner()">Iniciar escáner</button>
+      <div id="result"></div>
+    </div>
+    <button onclick="logout()">Cerrar sesión</button>
+  </div>
+
+  <script>
+    const supabase = window.supabase.createClient(
+      "https://oqskgarzuztkagvupqsk.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9xc2tnYXJ6dXp0a2FndnVwcXNrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk2NjA3NzYsImV4cCI6MjA2NTIzNjc3Nn0.GttqwBmOrD09QDY68QFUN1_zrUQBCa7R4iBNC2qZZ0o"
+    );
+
+    let negocio = null;
+
+    async function verificarSesion() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        window.location.href = "/login.html";
+        return;
+      }
+
+      const { data, error } = await supabase
+        .from("businesses")
+        .select("*")
+        .eq("email", user.email)
+        .single();
+
+      if (data) {
+        negocio = data;
+        document.getElementById("welcome").innerHTML = "<p>Bienvenido, <strong>" + data.name + "</strong></p>";
+        document.getElementById("recompensa").value = data.recompensa || "";
+        document.getElementById("meta").value = data.meta_consumos || 0;
+      } else {
+        document.getElementById("welcome").innerHTML = "<p style='color:red;'>No se encontró el negocio.</p>";
+      }
+    }
+
+    async function guardarRecompensa() {
+      const recompensa = document.getElementById("recompensa").value;
+      const meta = parseInt(document.getElementById("meta").value);
+
+      const { error } = await supabase
+        .from("businesses")
+        .update({ recompensa, meta_consumos: meta })
+        .eq("id", negocio.id);
+
+      if (!error) {
+        alert("¡Recompensa actualizada!");
+      }
+    }
+
+    function iniciarScanner() {
+      const scanner = new Html5Qrcode("scanner");
+      scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, async (decodedText) => {
+        scanner.stop();
+        document.getElementById("result").innerText = "QR detectado: " + decodedText;
+        await procesarQR(decodedText);
+      });
+    }
+
+    async function procesarQR(clienteId) {
+      const { data, error } = await supabase
+        .from("customers")
+        .select("*")
+        .eq("id", clienteId)
+        .eq("business_id", negocio.id)
+        .single();
+
+      if (!data || error) {
+        document.getElementById("result").innerHTML = "<p style='color:red;'>Cliente no válido.</p>";
+        return;
+      }
+
+      const nuevos = (data.consumos_actuales || 0) + 1;
+      const { error: updateError } = await supabase
+        .from("customers")
+        .update({ consumos_actuales: nuevos })
+        .eq("id", clienteId);
+
+      if (!updateError) {
+        document.getElementById("result").innerHTML =
+          `<p style='color:green;'>✅ Consumición registrada (${nuevos} de ${negocio.meta_consumos})</p>`;
+      }
+    }
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "/login.html";
+    }
+
+    verificarSesion();
+  </script>
+</body>
+</html>
