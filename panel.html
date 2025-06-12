@@ -24,7 +24,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    h2 {
+    h2, h3 {
       margin-top: 0;
       color: #243B55;
     }
@@ -57,8 +57,18 @@
       max-width: 360px;
       margin-top: 20px;
     }
-    .hidden {
-      display: none;
+    #clientes {
+      margin-top: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      padding: 8px;
+      border: 1px solid #ccc;
+      text-align: left;
     }
     #result {
       margin-top: 20px;
@@ -70,21 +80,37 @@
   <div class="container">
     <h2>Panel de Administración</h2>
     <div id="welcome"></div>
-    <div>
-      <h3>Configuración de Recompensa</h3>
-      <label for="recompensa">Recompensa:</label>
-      <input type="text" id="recompensa" />
-      <label for="meta">Meta de consumos:</label>
-      <input type="number" id="meta" />
-      <button onclick="guardarRecompensa()">Guardar cambios</button>
+
+    <h3>Configuración de Recompensa</h3>
+    <label for="recompensa">Recompensa:</label>
+    <input type="text" id="recompensa" />
+    <label for="meta">Meta de consumos:</label>
+    <input type="number" id="meta" />
+    <button onclick="guardarRecompensa()">Guardar cambios</button>
+
+    <hr />
+
+    <h3>Escanear QR de Cliente</h3>
+    <div id="scanner"></div>
+    <button onclick="iniciarScanner()">Iniciar escáner</button>
+    <div id="result"></div>
+
+    <hr />
+
+    <div id="clientes">
+      <h3>Clientes Registrados</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Progreso</th>
+          </tr>
+        </thead>
+        <tbody id="clientes-lista"></tbody>
+      </table>
     </div>
-    <hr>
-    <div>
-      <h3>Escanear QR de Cliente</h3>
-      <div id="scanner"></div>
-      <button onclick="iniciarScanner()">Iniciar escáner</button>
-      <div id="result"></div>
-    </div>
+
     <button onclick="logout()">Cerrar sesión</button>
   </div>
 
@@ -114,6 +140,7 @@
         document.getElementById("welcome").innerHTML = "<p>Bienvenido, <strong>" + data.name + "</strong></p>";
         document.getElementById("recompensa").value = data.recompensa || "";
         document.getElementById("meta").value = data.meta_consumos || 0;
+        cargarClientes();
       } else {
         document.getElementById("welcome").innerHTML = "<p style='color:red;'>No se encontró el negocio.</p>";
       }
@@ -130,7 +157,27 @@
 
       if (!error) {
         alert("¡Recompensa actualizada!");
+        cargarClientes();
       }
+    }
+
+    async function cargarClientes() {
+      const { data: clientes } = await supabase
+        .from("customers")
+        .select("*")
+        .eq("business_id", negocio.id);
+
+      const tbody = document.getElementById("clientes-lista");
+      tbody.innerHTML = "";
+      clientes.forEach(c => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${c.name}</td>
+          <td>${c.email}</td>
+          <td>${c.consumos_actuales || 0} / ${negocio.meta_consumos}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
 
     function iniciarScanner() {
@@ -164,6 +211,7 @@
       if (!updateError) {
         document.getElementById("result").innerHTML =
           `<p style='color:green;'>✅ Consumición registrada (${nuevos} de ${negocio.meta_consumos})</p>`;
+        cargarClientes();
       }
     }
 
