@@ -3,50 +3,85 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Registro - Multi Negocio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro Cliente - Fidelexa</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+    }
     body {
-      font-family: sans-serif;
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      color: #333;
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 12px 24px rgba(0,0,0,0.2);
       max-width: 400px;
-      margin: 50px auto;
-      padding: 20px;
-      background-color: #f2f2f2;
+      width: 100%;
       text-align: center;
     }
-    img#logo {
-      max-width: 120px;
-      margin-bottom: 20px;
+    .logo {
+      width: 100px;
+      margin: 0 auto 20px;
     }
     h2 {
       margin-bottom: 10px;
+      font-size: 24px;
+      color: #2a5298;
     }
-    input, button {
+    input {
       width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 6px;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 16px;
     }
     button {
-      background-color: #333;
-      color: white;
+      width: 100%;
+      padding: 12px;
+      background-color: #2a5298;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
       cursor: pointer;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #1e3c72;
     }
     #resultado {
       margin-top: 20px;
     }
+    img.qr {
+      width: 200px;
+      margin-top: 15px;
+    }
   </style>
 </head>
 <body>
-  <img id="logo" src="" alt="Logo negocio" />
-  <h2>Registro</h2>
-
-  <input type="text" id="name" placeholder="Tu nombre" required />
-  <input type="email" id="email" placeholder="Tu email" required />
-  <button onclick="register()">Registrarse</button>
-
-  <div id="resultado"></div>
+  <div class="container">
+    <img id="logo" class="logo" src="" alt="Logo negocio" />
+    <h2>Registro de Cliente</h2>
+    <input type="text" id="name" placeholder="Tu nombre" required />
+    <input type="email" id="email" placeholder="Tu email" required />
+    <button onclick="register()">Registrarse</button>
+    <div id="resultado"></div>
+  </div>
 
   <script>
     const slug = new URLSearchParams(window.location.search).get("negocio");
@@ -65,15 +100,11 @@
 
       if (data?.logo_url) {
         document.getElementById("logo").src = data.logo_url;
-      } else {
-        console.error("No se encontró logo para el slug:", slug, error);
       }
     }
 
     if (slug) {
       cargarLogo(slug);
-    } else {
-      console.error("Slug no detectado en la URL");
     }
 
     async function register() {
@@ -103,7 +134,7 @@
         if (response.ok) {
           resultado.innerHTML = `
             <p>¡Registro exitoso!</p>
-            <img src="${data.qr_url}" alt="QR" style="margin-top: 10px; width: 200px;" />
+            <img src="${data.qr_url}" class="qr" alt="QR" />
           `;
         } else {
           resultado.innerHTML = `<p style="color:red;">Error: ${data.error || JSON.stringify(data)}</p>`;
