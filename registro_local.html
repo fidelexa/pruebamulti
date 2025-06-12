@@ -25,7 +25,7 @@
       padding: 30px;
       border-radius: 16px;
       box-shadow: 0 12px 24px rgba(0,0,0,0.2);
-      max-width: 420px;
+      max-width: 440px;
       width: 100%;
       text-align: center;
     }
@@ -41,6 +41,9 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 15px;
+    }
+    input[type="file"] {
+      border: none;
     }
     button {
       width: 100%;
@@ -72,6 +75,7 @@
     <input type="number" id="meta" placeholder="Nº consumiciones necesarias" />
     <input type="email" id="email" placeholder="Correo electrónico" required />
     <input type="password" id="password" placeholder="Contraseña" required />
+    <input type="file" id="logo" accept="image/png, image/jpeg" />
     <button onclick="registrarLocal()">Registrar negocio</button>
     <div id="resultado"></div>
   </div>
@@ -89,11 +93,28 @@
       const meta = parseInt(document.getElementById("meta").value.trim());
       const email = document.getElementById("email").value.trim();
       const password = document.getElementById("password").value.trim();
+      const logoFile = document.getElementById("logo").files[0];
       const resultado = document.getElementById("resultado");
 
       if (!name || !slug || !email || !password) {
         resultado.innerHTML = "<p style='color:red;'>Por favor, completa los campos obligatorios.</p>";
         return;
+      }
+
+      let logo_url = null;
+
+      if (logoFile) {
+        const filePath = `logos/${slug}_${Date.now()}.${logoFile.name.split('.').pop()}`;
+        const { error: uploadError } = await supabase.storage
+          .from("logos")
+          .upload(filePath, logoFile);
+
+        if (uploadError) {
+          resultado.innerHTML = `<p style='color:red;'>Error al subir el logo: ${uploadError.message}</p>`;
+          return;
+        }
+
+        logo_url = supabase.storage.from("logos").getPublicUrl(filePath).data.publicUrl;
       }
 
       const { data: user, error: signupError } = await supabase.auth.signUp({
@@ -108,7 +129,7 @@
 
       const { error: insertError } = await supabase
         .from("businesses")
-        .insert([{ name, slug, email, recompensa, meta_consumos: meta }]);
+        .insert([{ name, slug, email, recompensa, meta_consumos: meta, logo_url }]);
 
       if (insertError) {
         resultado.innerHTML = `<p style='color:red;'>Error al guardar negocio: ${insertError.message}</p>`;
