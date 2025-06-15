@@ -150,8 +150,6 @@
         document.getElementById("recompensa").value = data.recompensa || "";
         document.getElementById("meta").value = data.meta_consumos || 0;
         cargarClientes();
-      } else {
-        document.getElementById("welcome").innerHTML = "<p style='color:red;'>No se encontró el negocio.</p>";
       }
     }
 
@@ -159,15 +157,13 @@
       const recompensa = document.getElementById("recompensa").value;
       const meta = parseInt(document.getElementById("meta").value);
 
-      const { error } = await supabase
+      await supabase
         .from("businesses")
         .update({ recompensa, meta_consumos: meta })
         .eq("id", negocio.id);
 
-      if (!error) {
-        alert("¡Recompensa actualizada!");
-        cargarClientes();
-      }
+      alert("¡Recompensa actualizada!");
+      cargarClientes();
     }
 
     async function cargarClientes() {
@@ -207,11 +203,17 @@
       scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, async (decodedText) => {
         scanner.stop();
         document.getElementById("result").innerText = "QR detectado: " + decodedText;
-        await procesarQR(decodedText);
+        const cantidad = prompt("¿Cuántas consumiciones deseas registrar?", "1");
+        const cantidadInt = parseInt(cantidad);
+        if (!isNaN(cantidadInt) && cantidadInt > 0) {
+          await procesarQR(decodedText, cantidadInt);
+        } else {
+          alert("Cantidad no válida.");
+        }
       });
     }
 
-    async function procesarQR(clienteId) {
+    async function procesarQR(clienteId, cantidad) {
       const { data, error } = await supabase
         .from("customers")
         .select("*")
@@ -224,17 +226,15 @@
         return;
       }
 
-      const nuevos = (data.consumos_actuales || 0) + 1;
-      const { error: updateError } = await supabase
+      const nuevos = (data.consumos_actuales || 0) + cantidad;
+      await supabase
         .from("customers")
         .update({ consumos_actuales: nuevos })
         .eq("id", clienteId);
 
-      if (!updateError) {
-        document.getElementById("result").innerHTML =
-          `<p style='color:green;'>✅ Consumición registrada (${nuevos} de ${negocio.meta_consumos})</p>`;
-        cargarClientes();
-      }
+      document.getElementById("result").innerHTML =
+        `<p style='color:green;'>✅ ${cantidad} consumiciones registradas (${nuevos} de ${negocio.meta_consumos})</p>`;
+      cargarClientes();
     }
 
     async function logout() {
