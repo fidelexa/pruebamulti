@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Cámara QR con Timeout</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f6fa;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #scanner {
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+      display: none;
+    }
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #log {
+      margin-top: 20px;
+      color: #d9534f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Test de Escáner QR</h2>
+    <p>Presiona el botón para iniciar la cámara. Si no se abre en 5 segundos, verás un aviso.</p>
+    <div id="scanner"></div>
+    <button onclick="iniciarScanner()">Iniciar escáner</button>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    let scanner;
+    let timeout;
+
+    async function iniciarScanner() {
+      document.getElementById("log").innerText = "Intentando abrir la cámara...";
+      document.getElementById("scanner").style.display = "block";
+
+      scanner = new Html5Qrcode("scanner");
+
+      timeout = setTimeout(() => {
+        document.getElementById("log").innerHTML = "❌ <strong>No se pudo abrir la cámara.</strong><br>Verifica que tu navegador tenga permisos activos y que estés usando HTTPS.";
+      }, 5000); // 5 segundos
+
+      try {
+        await scanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          qrCodeMessage => {
+            clearTimeout(timeout);
+            document.getElementById("log").innerHTML = "<strong>✅ QR detectado:</strong> " + qrCodeMessage;
+            scanner.stop();
+          },
+          errorMessage => {
+            console.warn("Error escaneando:", errorMessage);
+          }
+        );
+        document.getElementById("log").innerText = "Escáner iniciado.";
+      } catch (err) {
+        clearTimeout(timeout);
+        console.error("Error al iniciar el escáner:", err);
+        document.getElementById("log").innerHTML = "❌ <strong>No se pudo acceder a la cámara:</strong><br>" + err;
+      }
+    }
+  </script>
+</body>
+</html>
