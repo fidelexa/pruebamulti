@@ -1,0 +1,83 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel con Escáner QR</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f6fa;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #scanner {
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+      border: 1px solid #ccc;
+    }
+    button {
+      padding: 10px 15px;
+      margin-top: 10px;
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #log {
+      margin-top: 20px;
+      color: #d9534f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Prueba de Escáner QR</h2>
+    <p>Presiona el botón para iniciar la cámara y escanear un código QR.</p>
+    <div id="scanner"></div>
+    <button onclick="iniciarScanner()">Iniciar escáner</button>
+    <div id="log"></div>
+  </div>
+
+  <script>
+    const scannerElement = document.getElementById("scanner");
+    const log = document.getElementById("log");
+
+    async function iniciarScanner() {
+      log.innerText = "Intentando iniciar cámara...";
+      const scanner = new Html5Qrcode("scanner");
+
+      try {
+        await scanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          qrCodeMessage => {
+            log.innerHTML = "<strong>QR detectado:</strong> " + qrCodeMessage;
+            scanner.stop();
+          },
+          errorMessage => {
+            console.warn("Error escaneando:", errorMessage);
+          }
+        );
+        log.innerText = "Escáner iniciado. Apunta al QR.";
+      } catch (err) {
+        console.error("Error al iniciar el escáner:", err);
+        log.innerHTML = "<strong>❌ No se pudo acceder a la cámara.</strong><br>" +
+                        "Verifica los permisos de cámara del navegador, y asegúrate de estar en HTTPS.";
+      }
+    }
+  </script>
+</body>
+</html>
