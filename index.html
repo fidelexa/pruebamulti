@@ -3,145 +3,119 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
+  <title>Fidelexa - Fidelización inteligente</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fidelexa – Fidelización inteligente para tu negocio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
       margin: 0;
-      font-family: 'Inter', sans-serif;
-      background-color: #f6f8fa;
-      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #0d2d26;
+      color: #ffffff;
     }
     header {
-      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-      color: white;
-      text-align: center;
-      padding: 80px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 40px;
+      background-color: #0d2d26;
     }
-    header h1 {
+    header img {
+      height: 40px;
+    }
+    .hero {
+      text-align: center;
+      padding: 100px 20px 60px;
+    }
+    .hero h1 {
       font-size: 42px;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
     }
-    header p {
+    .hero p {
+      font-size: 20px;
+      margin-bottom: 30px;
+      max-width: 600px;
+      margin-inline: auto;
+    }
+    .hero a {
+      padding: 14px 30px;
       font-size: 18px;
-      max-width: 700px;
-      margin: auto;
-      opacity: 0.9;
-    }
-    .cta-buttons {
-      margin-top: 30px;
-    }
-    .cta-buttons a {
-      display: inline-block;
-      margin: 10px;
-      padding: 12px 24px;
-      font-weight: 600;
-      text-decoration: none;
+      background-color: #ffffff;
+      color: #0d2d26;
       border-radius: 8px;
-      color: white;
-      background: #0077cc;
-      transition: background 0.3s;
+      text-decoration: none;
+      font-weight: bold;
     }
-    .cta-buttons a:hover {
-      background: #005fa3;
-    }
-    section {
-      max-width: 1100px;
-      margin: 60px auto;
-      padding: 0 20px;
-    }
-    h2 {
-      font-size: 30px;
+    .section {
+      background-color: #ffffff;
+      color: #0d2d26;
+      padding: 80px 20px;
       text-align: center;
+    }
+    .section h2 {
+      font-size: 32px;
       margin-bottom: 40px;
-      color: #203a43;
     }
     .features {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 30px;
+      justify-content: center;
+      max-width: 1000px;
+      margin: auto;
     }
     .feature {
-      flex: 1 1 300px;
-      background: white;
-      padding: 25px;
+      background: #f0f0f0;
+      padding: 30px;
       border-radius: 12px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.05);
-      text-align: center;
-    }
-    .feature img {
-      width: 60px;
-      margin-bottom: 15px;
-    }
-    .feature h3 {
-      color: #243B55;
-      margin-bottom: 10px;
-    }
-    .feature p {
-      font-size: 15px;
-      line-height: 1.5;
-    }
-    .hero-image {
-      text-align: center;
-      margin-top: 60px;
-    }
-    .hero-image img {
-      max-width: 90%;
-      height: auto;
-      border-radius: 16px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      width: 250px;
+      box-shadow: 0 3px 5px rgba(0,0,0,0.1);
     }
     footer {
-      background: #eaeff3;
       text-align: center;
-      padding: 30px;
+      padding: 40px 20px;
+      background-color: #0d2d26;
+      color: #aaa;
       font-size: 14px;
-      color: #555;
-      margin-top: 60px;
+    }
+    @media (max-width: 700px) {
+      .features {
+        flex-direction: column;
+        align-items: center;
+      }
     }
   </style>
 </head>
 <body>
-
   <header>
-    <h1>Fidelexa</h1>
-    <p>Una plataforma de fidelización inteligente con QR para bares, restaurantes, cafeterías y locales modernos. Fácil de usar, potente y personalizada para tu negocio.</p>
-    <div class="cta-buttons">
-      <a href="/registro_local.html">Registrar mi negocio</a>
-      <a href="/login.html">Acceder al panel</a>
-    </div>
+    <img src="https://pruebamulti.vercel.app/assets/fidelexa-logo.png" alt="Fidelexa logo">
   </header>
 
-  <section>
-    <h2>¿Por qué elegir Fidelexa?</h2>
+  <div class="hero">
+    <h1>Fideliza a tus clientes con Fidelexa</h1>
+    <p>Un sistema inteligente para que bares, restaurantes o locales premien la fidelidad de sus clientes con un simple QR.</p>
+    <a href="registro_local.html">Registra tu local</a>
+  </div>
+
+  <div class="section">
+    <h2>¿Por qué usar Fidelexa?</h2>
     <div class="features">
       <div class="feature">
-        <img src="https://img.icons8.com/ios-filled/100/4a90e2/qr-code.png" alt="QR">
-        <h3>Fácil y rápido</h3>
-        <p>Genera códigos QR únicos para tus clientes y empieza a fidelizar en minutos sin instalar nada.</p>
+        <h3>🎯 Fácil de usar</h3>
+        <p>Registro en segundos. Solo necesitas el logo, correo y tu sistema de recompensa.</p>
       </div>
       <div class="feature">
-        <img src="https://img.icons8.com/ios-filled/100/4a90e2/podium-with-speaker.png" alt="Gestión">
-        <h3>Gestión profesional</h3>
-        <p>Accede a un panel privado donde puedes ver tus clientes, editar recompensas y escanear sus QR.</p>
+        <h3>📱 QR + Wallet</h3>
+        <p>Cada cliente recibe su tarjeta virtual con QR. Compatible con Apple Wallet y Google Wallet.</p>
       </div>
       <div class="feature">
-        <img src="https://img.icons8.com/ios-filled/100/4a90e2/wallet.png" alt="Wallet">
-        <h3>Compatible con Wallet</h3>
-        <p>Próximamente: tarjetas digitales para Apple Wallet y Google Wallet con integración directa.</p>
+        <h3>🛠 Gestión simple</h3>
+        <p>Escanea, suma consumiciones y entrega recompensas desde tu panel privado.</p>
       </div>
     </div>
-  </section>
-
-  <div class="hero-image">
-    <img src="https://images.unsplash.com/photo-1515162305284-73e2ca1b2a9b?auto=format&fit=crop&w=1600&q=80" alt="Mockup del sistema" />
   </div>
 
   <footer>
-    &copy; 2025 Fidelexa · Desarrollado con pasión para negocios que quieren crecer 🚀
+    &copy; 2024 Fidelexa · Plataforma de fidelización inteligente para locales
   </footer>
-
 </body>
 </html>
