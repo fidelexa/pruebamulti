@@ -1,0 +1,79 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Diagnóstico de Cámara</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+      background: #f4f6f9;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    video {
+      width: 100%;
+      max-height: 300px;
+      background: #000;
+      margin-top: 10px;
+    }
+    pre {
+      background: #eee;
+      padding: 10px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔍 Diagnóstico de Cámara</h2>
+    <p>Esta prueba intentará detectar cámaras en tu dispositivo y mostrar errores si no se puede acceder.</p>
+    <button onclick="probarCamara()">Probar cámara</button>
+    <h3>📷 Vista previa:</h3>
+    <video id="video" autoplay muted playsinline></video>
+    <h3>📋 Resultado:</h3>
+    <pre id="log">Esperando prueba...</pre>
+  </div>
+
+  <script>
+    async function probarCamara() {
+      const log = document.getElementById("log");
+      const video = document.getElementById("video");
+      log.textContent = "Buscando dispositivos...";
+
+      try {
+        const dispositivos = await navigator.mediaDevices.enumerateDevices();
+        const camaras = dispositivos.filter(d => d.kind === "videoinput");
+        log.textContent = "Cámaras encontradas:\n" + camaras.map(c => "- " + c.label).join("\n") || "Ninguna detectada";
+
+        if (camaras.length === 0) {
+          log.textContent += "\n❌ No se detectó ninguna cámara.";
+          return;
+        }
+
+        const constraints = {
+          video: {
+            deviceId: camaras[0].deviceId
+          }
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        log.textContent += "\n✅ Cámara iniciada correctamente.";
+      } catch (err) {
+        console.error(err);
+        log.textContent += "\n❌ Error al acceder a la cámara:\n" + err.message;
+      }
+    }
+  </script>
+</body>
+</html>
