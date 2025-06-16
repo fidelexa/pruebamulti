@@ -1,0 +1,88 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Escáner QR con cámara trasera</title>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/minified/html5-qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f4f6f9;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    #reader {
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      cursor: pointer;
+    }
+    #log {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #d9534f;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>📷 Escáner QR (Cámara Trasera)</h2>
+    <p>Apunta al código QR del cliente.</p>
+    <div id="reader"></div>
+    <button onclick="iniciarScanner()">Iniciar escáner</button>
+    <div id="log">Esperando inicio...</div>
+  </div>
+
+  <script>
+    const log = document.getElementById("log");
+    let scanner;
+
+    async function iniciarScanner() {
+      log.innerText = "Inicializando escáner...";
+      if (scanner) {
+        await scanner.stop().catch(() => {});
+      }
+
+      scanner = new Html5Qrcode("reader");
+
+      try {
+        await scanner.start(
+          { facingMode: { exact: "environment" } },
+          {
+            fps: 10,
+            qrbox: 250
+          },
+          (decodedText, decodedResult) => {
+            log.innerHTML = `<strong>✅ QR detectado:</strong> ${decodedText}`;
+            scanner.stop();
+          },
+          errorMessage => {
+            // Error silencioso de escaneo
+          }
+        );
+        log.innerText = "Escáner activo.";
+      } catch (error) {
+        console.error(error);
+        log.innerHTML = `<strong>❌ Error:</strong> ${error.message || error}`;
+      }
+    }
+  </script>
+</body>
+</html>
